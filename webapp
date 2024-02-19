@@ -1,0 +1,747 @@
+SELECT studentID, FirstName, LastName, FirstName + ' ' + LastName AS FullName
+FROM student;
+CREATE TABLE table_name (
+    column_1 datatype,
+    column_2 datatype,
+    column_3 datatype
+);
+ALTER TABLE table_name
+ADD column_name datatype;
+CREATE TABLE Persons (
+    ID int NOT NULL,
+    LastName varchar(255) NOT NULL,
+    FirstName varchar(255),
+    Age int,
+    CHECK (Age>=18)
+);
+CREATE TABLE Persons (
+    ID int NOT NULL,
+    LastName varchar(255) NOT NULL,
+    FirstName varchar(255),
+    Age int,
+    City varchar(255),
+    CONSTRAINT CHK_Person CHECK (Age>=18 AND City='Sandnes')
+);
+SELECT studentID, FullName, sat_score, rcd_updated FROM student;
+UPDATE Person
+SET Name = “Elton John”
+WHERE Id = 4;
+SELECT column_name, COUNT(*)
+FROM table_name
+GROUP BY column_name;
+SELECT column_name, COUNT(*)
+FROM table_name
+GROUP BY column_name
+HAVING COUNT(*) > value;
+SELECT studentID, FullName, sat_score
+FROM student
+ORDER BY FullName DESC;
+SELECT count(*) AS studentCount FROM student; 
+DELETE FROM Person
+WHERE Id = 3;
+INSERT INTO table_name (column_1, column_2, column_3) 
+VALUES (value_1, 'value_2', value_3);
+ALTER TABLE Orders
+ADD CONSTRAINT FK_PersonOrder
+FOREIGN KEY (PersonID) REFERENCES Persons(PersonID);
+--------------------------------------------------------
+//Read and insert
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+
+public class StageShowMain {
+    public static void main(String[] args) {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+
+            // Step 1: Create the connection object
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/ticket", "root", "");
+
+            // Step 2: Create the statement object
+            Statement st = con.createStatement();
+
+            // Step 3: Define the values to be inserted
+            int eventId = 1; // Example event ID
+            String eventName = "Example Event"; // Example event name
+            // Define other values as needed
+
+            // Step 4: Construct the INSERT statement
+            String insertQuery = "INSERT INTO stage_event (id, name) VALUES (" + eventId + ", '" + eventName + "')";
+            // Construct other columns as needed
+
+            // Step 5: Execute the INSERT statement
+            int rowsAffected = st.executeUpdate(insertQuery);
+            if (rowsAffected > 0) {
+                System.out.println("Insertion successful.");
+            } else {
+                System.out.println("Insertion failed.");
+            }
+
+            // Step 6: Close the statement and connection objects
+            st.close();
+            con.close();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}
+----------------------------------------------------------
+//CRUD operations
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+public class StageShowMain {
+    public static void main(String[] args) {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+
+            // Step 1: Create the connection object
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/ticket", "root", "");
+
+            // Step 2: Create the statement object
+            Statement st = con.createStatement();
+
+            // CREATE operation: Insert a new record into the stage_event table
+            int newEventId = 1; // Example event ID for the new record
+            String newEventName = "New Event"; // Example event name for the new record
+            String insertQuery = "INSERT INTO stage_event (id, name) VALUES (" + newEventId + ", '" + newEventName + "')";
+            st.executeUpdate(insertQuery);
+            System.out.println("New record inserted successfully.");
+
+            // READ operation: Retrieve and display all records from the stage_event table
+            String selectQuery = "SELECT * FROM stage_event";
+            ResultSet resultSet = st.executeQuery(selectQuery);
+            System.out.println("Records in stage_event table:");
+            while (resultSet.next()) {
+                int eventId = resultSet.getInt("id");
+                String eventName = resultSet.getString("name");
+                System.out.println("Event ID: " + eventId + ", Event Name: " + eventName);
+            }
+
+            // UPDATE operation: Update the name of an existing record in the stage_event table
+            int eventIdToUpdate = 1; // Example event ID to update
+            String updatedEventName = "Updated Event"; // New event name
+            String updateQuery = "UPDATE stage_event SET name = '" + updatedEventName + "' WHERE id = " + eventIdToUpdate;
+            st.executeUpdate(updateQuery);
+            System.out.println("Record with ID " + eventIdToUpdate + " updated successfully.");
+
+            // DELETE operation: Delete a record from the stage_event table
+            int eventIdToDelete = 1; // Example event ID to delete
+            String deleteQuery = "DELETE FROM stage_event WHERE id = " + eventIdToDelete;
+            st.executeUpdate(deleteQuery);
+            System.out.println("Record with ID " + eventIdToDelete + " deleted successfully.");
+
+            // Close the ResultSet, statement, and connection objects
+            resultSet.close();
+            st.close();
+            con.close();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}
+-----------------------------------------------------------
+//patient_registration.html
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Hospital Management System</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="style.css">
+
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg nav-back fixed-top" 
+    id="mainNav">
+      <div class="container">
+          <a class="navbar-brand" href="#">Medical</a>
+          <button class="navbar-toggler navbar-toggler-right" type="button"
+           data-toggle="collapse" data-target="#navbarResponsive" 
+           aria-controls="navbarResponsive" aria-expanded="false" 
+           aria-label="Toggle navigation"><i class="fas fa-syringe fa-2x"></i>
+           </button>
+          <div class="collapse navbar-collapse" id="navbarResponsive">
+              <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" 
+                  href="#about">Services</a></li>
+                  <li class="nav-item"><a class="nav-link" 
+                    href="#about">About</a></li>
+                  <li class="nav-item"><a class="nav-link" 
+                    href="#about">Medical Camps</a></li>
+                  <li class="nav-item"><a class="nav-link"
+                     href="#projects">Team</a></li>
+                  <li class="nav-item"><a class="nav-link" 
+                    href="#signup">Contact</a></li>
+              </ul>
+          </div>
+      </div>
+  </nav>
+  <div class="container mt-4 p-4">
+      <div class="row">
+          <div class="col-md-6">
+              <h2 class="text-center my-4">
+                  Patient Registration
+              </h2>
+              <form id="registrationForm">
+                  <div class="form-group row">
+                      <label class="col-sm-4 col-lg-4">
+                          Patient Name
+                      </label>
+                      <div class="col-sm-8 col-lg-8">
+                          <input type="text"id="patient-name"class="form-control"
+                          placeholder="Name"required>
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <label class="col-sm-4 col-lg-4">
+                          Patient Id
+                      </label>
+                      <div class="col-sm-8 col-lg-8">
+                          <input type="text"id="patient-id"class="form-control"
+                                 placeholder="Id"required>
+                      </div>
+                  </div>
+                  <!---->
+                  <div class="form-group row">
+                    <label class="col-sm-4 col-lg-4">
+                        Contact
+                    </label>
+                    <div class="col-sm-8 col-lg-8">
+                        <input type="tel"id="contact"class="form-control"
+                        placeholder="123"required>
+                    </div>
+                </div>
+                <!---->
+                <div class="form-group row">
+                    <label class="col-sm-4 col-lg-4">
+                      Age
+                    </label>
+                    <div class="col-sm-8 col-lg-8">
+                        <input type="number"id="age"class="form-control">
+                    </div>
+                </div>
+                <!---->
+                <div class="form-group row">
+                    <label class="col-sm-4 col-lg-4">
+                        Covid
+                    </label>
+                    <div class="col-sm-8 col-lg-8">
+                        <select id="covidStatus" class="form-control">
+                            <option value="negative">Negative</option>
+                            <option value="positive">Positive</option>
+                            <option value="notConfirmed">Not Yet Confirmed</option>
+                        </select>
+                    </div>
+                </div>
+                <!---->
+                <div class="form-group row">
+                    <label class="col-sm-4 col-lg-4">
+                        Address
+                    </label>
+                    <div class="col-sm-8 col-lg-8">
+                        <textarea id="address" class="form-control" required></textarea>
+                    </div>
+                </div>
+                <!---->
+                <div class="form-group row justify-content-end">
+                    <div class="col-sm-5">
+                        <button type="submit"class="btn btn-form">
+                            Confirm
+                        </button>
+                    </div>
+                    <a href="C:/Users/junai/Documents/Kajji/DigiLedge/hospitalmanagement/user_login.html" class="mr-3 text">Already registered?</a>
+                    <a href="C:/Users/junai/Documents/Kajji/DigiLedge/hospitalmanagement/administrator_login.html"class="text">Administrator login?</a></div>
+                </div>
+                </form>
+          </div>
+      </div>
+  </div>
+  
+  <!-- Footer-->
+  <footer class="footer py-4 mt-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-4 text-lg-right">
+              <a class="mr-3 text" href="#!">Privacy Policy</a>
+              <a href="#!"class="text">Terms of Use</a></div>
+        </div>
+    </div>
+</footer>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="frontend_new.js"></script>
+  </body>
+</html>
+-----------------------------------------------------------------
+//style.css
+body{
+    font-family: 'Roboto', sans-serif;
+  }
+  .nav-back{
+      background: rgba(17, 219, 207,0.8);
+      color: #fff;
+  }
+  .navbar-brand{
+    color: #000;
+  }
+  .navbar-brand:hover{
+    color: #fff;
+  }
+  .nav-link{
+    color: #000;
+  }
+  .nav-link:hover{
+    color:#fff;
+  }
+  .navbar-toggler{
+    outline: none!important;
+  }
+    .main-btn {
+      font-family: "Poppins", sans-serif;
+      text-transform: uppercase;
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 1px;
+      display: inline-block;
+      padding: 8px 28px;
+      border-radius: 50px;
+      transition: 0.5s;
+      margin: 10px;
+      border: 2px solid #fff;
+      color: #fff;
+    }
+    
+     .main-btn:hover {
+      background: #11dbcf;
+      border: 2px solid #11dbcf;
+      text-decoration: none;
+      color:#fff;
+    }
+   .form-group .btn-form{
+    background: #11dbcf;
+    border: 2px solid #11dbcf;
+    text-decoration: none;
+    color:#000;
+   }
+    /*.footer {
+        text-align: center;
+        font-size: 0.9rem;
+        background:rgba(17, 219, 207,0.8);
+        margin-top: auto;
+      }*/
+      .footer .text{
+        color: #000;
+      }
+------------------------------------------------------------
+Vs Code [https://code.visualstudio.com/download]
+
+in case you use Intelij for Java make sure to scroll down and download community edition cause that only is free
+ [https://www.jetbrains.com/idea/download/?section=windows]
+
+Xampp Control Server [https://www.apachefriends.org/]
+make sure apache and mysql work
+
+Jar file download [https://raw.githubusercontent.com/hiiiiiiiiiiiiiiiiiiiiii13/del/main/mysql-connector-java-3.1.14.jar]
+
+Java Connection code [https://raw.githubusercontent.com/hiiiiiiiiiiiiiiiiiiiiii13/del/main/javaConnection]
+----------------------------------------------------------
+//index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stage Event CRUD</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Stage Event CRUD Operations</h1>
+
+    <div class="form-container">
+        <form id="event-form">
+            <label for="event-id">Event ID:</label>
+            <input type="text" id="event-id" name="event-id" required><br><br>
+
+            <label for="event-name">Event Name:</label>
+            <input type="text" id="event-name" name="event-name" required><br><br>
+
+            <!-- Add other fields as needed for CRUD operations -->
+
+            <div class="button-container">
+                <button type="button" onclick="addEvent()">Add Event</button>
+                <button type="button" onclick="updateEvent()">Update Event</button>
+                <button type="button" onclick="deleteEvent()">Delete Event</button>
+                <button type="button" onclick="fetchEvents()">Fetch Events</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="event-details"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+--------------------------------------------------------------
+//style.css
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.form-container {
+    width: 50%;
+    margin: 20px auto;
+}
+
+form {
+    background-color: #f2f2f2;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    box-sizing: border-box;
+}
+
+.button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+------------------------------------------------------
+//javascript
+function addEvent() {
+    var eventId = document.getElementById("event-id").value;
+    var eventName = document.getElementById("event-name").value;
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            // Handle successful response from Java backend
+            alert("Event added successfully!");
+        }
+    };
+    xhttp.open("POST", "http://localhost:8080/addEvent", true); // Replace URL with your Java backend endpoint
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send("eventId=" + eventId + "&eventName=" + eventName);
+}
+
+// Implement similar functions for updateEvent(), deleteEvent(), and fetchEvents()
+---------------------------------------------------------------------------
+//java
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.sql.*;
+
+public class AddEventServlet extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String eventId = request.getParameter("eventId");
+        String eventName = request.getParameter("eventName");
+
+        // Perform database insertion using the eventId and eventName
+
+        // Send response back to client
+        response.setContentType("text/plain");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write("Event added successfully!");
+    }
+}
+---------------------------------------------------------
+1.Consider an application that implements a remote dictionary. The dictionary offers four operations: count to return the word count, insert to insert a word and its content, delete to delete a word, and lookup to search for a word and return the content of the word.
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+public interface DictionaryInterface extends Remote {
+    int count() throws RemoteException;
+    void insert(String word, String content) throws RemoteException;
+    void delete(String word) throws RemoteException;
+    String lookup(String word) throws RemoteException;
+}
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.HashMap;
+import java.util.Map;
+public class Dictionary extends UnicastRemoteObject implements DictionaryInterface{
+    private Map<String, String> dictionary;
+    public Dictionary() throws RemoteException {
+        dictionary = new HashMap<>();
+    }
+    @Override
+    public int count() throws RemoteException {
+        return dictionary.size();
+    }
+    @Override
+    public void insert(String word, String content) throws RemoteException {
+        dictionary.put(word, content);
+    }
+    @Override
+    public void delete(String word) throws RemoteException {
+        dictionary.remove(word);
+    }
+    @Override
+    public String lookup(String word) throws RemoteException {
+        return dictionary.get(word);
+    }
+}
+import java.rmi.Naming;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+public class DictionaryServer {
+    public static void main(String[] args) {
+        try {
+            LocateRegistry.createRegistry(1099);
+            Naming.rebind("DictionaryService", dictionary);
+            System.out.println("Dictionary service is running..."); } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (Exception e) { 
+            e.printStackTrace();
+        }
+    }
+}
+import java.rmi.Naming;
+import java.rmi.RemoteException;
+public class DictionaryClient {
+    public static void main(String[] args) {
+        try {
+            Naming.lookup("rmi://localhost:1099/DictionaryService");
+            dictionary.insert("apple", "A fruit with red or yellow edible skin and a core containing seeds.");
+            dictionary.insert("banana", "An elongated   curved  fruit   with    a   yellow  or reddish skin.");
+            dictionary.insert("orange", "A  round   citrus  fruit   with    a   tough   bright reddish-yellow rind."); 
+            int wordCount = dictionary.count();
+            System.out.println("Word Count: " + wordCount);
+            String appleContent = dictionary.lookup("apple");
+            System.out.println("Definition of 'apple': " + appleContent);
+            dictionary.delete("banana");    
+            String bananaContent = dictionary.lookup("banana");
+            System.out.println("Definition of 'banana': " + bananaContent); } catch (RemoteException e) {
+            e.printStackTrace(); 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+2. Design a calculator using UI components. The calculator application logic should be implemented through RMI program and test the output.
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+public interface CalculatorInterface extends Remote {
+    int add(int a, int b) throws RemoteException; 
+    int subtract(int a, int b) throws RemoteException; 
+    int multiply(int a, int b) throws RemoteException; 
+    double divide(int a, int b) throws RemoteException;
+}
+import java.rmi.RemoteException; 
+import java.rmi.server.UnicastRemoteObject;
+public class Calculator extends UnicastRemoteObject implements CalculatorInterface {
+    public Calculator() throws RemoteException {
+    }
+    @Override public int add(int a, int b) throws RemoteException { 
+        return a + b;
+    }
+    @Override public int subtract(int a, int b) throws RemoteException {
+        return a - b;
+    }
+    @Override public int multiply(int a, int b) throws RemoteException { 
+        return a * b;
+    }
+    @Override public double divide(int a, int b) throws RemoteException { 
+        if (b == 0) { 
+            throw new IllegalArgumentException("Cannot divide by zero");
+        }
+        return (double) a / b;
+    }
+}
+import java.rmi.Naming; 
+import java.rmi.RemoteException; 
+import java.rmi.registry.LocateRegistry; 
+public class CalculatorServer {
+    public static void main(String[] args) { 
+        try {
+            Calculator calculator = new Calculator();
+            LocateRegistry.createRegistry(1099);
+            Naming.rebind("CalculatorService", calculator);
+            System.out.println("Calculator service is running..."); 
+        } catch (RemoteException e) {
+            e.printStackTrace(); 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+import java.rmi.Naming; 
+import java.rmi.RemoteException; 
+public class CalculatorClient {
+    public static void main(String[] args) {
+        try {
+            CalculatorInterface calculator = (CalculatorInterface)
+            Naming.lookup("rmi://localhost:1099/CalculatorService");
+            int sum = calculator.add(a, b); 
+            int difference = calculator.subtract(a, b); 
+            int product = calculator.multiply(a, b); 
+            double division = calculator.divide(a, b);
+            System.out.println("Sum: " + sum);
+            System.out.println("Difference: " + difference);
+            System.out.println("Product: " + product);
+            System.out.println("Division: " + division); 
+        } catch (RemoteException e) {
+            e.printStackTrace(); 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+3. A book shop maintains the inventory of books that are being sold at the shop the list includes details such as author, title and publisher and stock position. Whenever a customer wants the book, the sales person inputs the title and author and the system search the list and display whether it is available or not. If it is not, an appropriate message is displayed, if it is, then the system displays the book details and requests for the number of copies require. If the requested are available, the total cost of the required copies is displayed: otherwise the message "Required copies not in stock" is displayed
+import java.rmi.Remote; 
+import java.rmi.RemoteException;
+public interface BookshopInterface extends Remote {
+    Book searchBook(String title, String author) throws RemoteException;
+    boolean checkAvailability(String    title,  String author, int requiredCopies) throws RemoteException;
+}
+import java.io.Serializable;
+public class Book implements Serializable { 
+    private String title; 
+    private String author; 
+    private String publisher;
+    private int stockPosition;
+    public Book(String title, String author, String publisher, int stockPosition) { 
+        this.title = title; 
+        this.author = author; 
+        this.publisher = publisher; 
+        this.stockPosition = stockPosition;
+    }
+    public String getTitle() { 
+        return title;
+    }
+    public String getAuthor() { 
+        return author;
+    }
+    public String getPublisher() { 
+        return publisher;
+    }
+    public int getStockPosition() { 
+        return stockPosition;
+    }
+}
+import java.rmi.RemoteException; 
+import java.rmi.server.UnicastRemoteObject; 
+import java.util.ArrayList; 
+import java.util.List;
+public class Bookshop extends UnicastRemoteObject implements BookshopInterface {
+    private List<Book> inventory;
+    public Bookshop() throws RemoteException { 
+        inventory = new ArrayList<>();
+        inventory.add(new Book("Book 1", "Author 1", "Publisher 1", 5)); 
+        inventory.add(new Book("Book 2", "Author 2", "Publisher 2", 3)); 
+        inventory.add(new Book("Book 3", "Author 3", "Publisher 3", 10));
+    }
+    @Override
+    public Book searchBook(String title, String author) throws RemoteException {
+        for (Book book : inventory) {
+            if (book.getTitle().equals(title) && book.getAuthor().equals(author)) {
+                return book;
+            }
+        }
+        return null;
+    }
+    @Override
+    public  boolean checkAvailability(String    title,  String  author, int requiredCopies) throws RemoteException { 
+        Book book = searchBook(title, author); 
+        if (book != null && book.getStockPosition() >= requiredCopies) { 
+            return true;
+        }
+        return false;
+    }
+}
+import java.rmi.Naming; 
+import java.rmi.RemoteException; 
+import java.rmi.registry.LocateRegistry;
+public class BookshopServer { 
+    public static void main(String[] args) { 
+        try {
+            Bookshop bookshop = new Bookshop();
+            LocateRegistry.createRegistry(1099);
+            Naming.rebind("BookshopService", bookshop);
+            System.out.println("Bookshop service is running..."); 
+        } catch (RemoteException e) {
+            e.printStackTrace(); } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+import java.rmi.Naming; 
+import java.rmi.RemoteException; 
+import java.util.Scanner;
+public class BookshopClient { 
+    public static void main(String[] args) { 
+        try {
+            BookshopInterface bookshop = (BookshopInterface)
+            Naming.lookup("rmi://localhost:1099/BookshopService");
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("Enter the book title: ");
+            String title = scanner.nextLine();
+            System.out.print("Enter the book author: ");
+            String author = scanner.nextLine();
+            System.out.print("Enter the number of copies required: "); 
+            int requiredCopies = scanner.nextInt();
+            Book book = bookshop.searchBook(title, author); 
+            if (book != null) {
+                System.out.println("Book found!");
+                System.out.println("Book details:");
+                System.out.println("Title: " + book.getTitle());
+                System.out.println("Author: " + book.getAuthor());
+                System.out.println("Publisher: " + book.getPublisher());
+                System.out.println("Stock Position: " + book.getStockPosition());
+                boolean available = bookshop.checkAvailability(title, author, requiredCopies);
+                if (available) {
+                    int totalCost = requiredCopies * 10;
+                    System.out.println("The required copies```The required copies are available. Total cost: $" + totalCost);
+                } else {
+                    System.out.println("Required copies not in stock.");
+                }
+            } 
+            else {
+                System.out.println("Book not found.");
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace(); 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+---------------------------------------------------------------------
