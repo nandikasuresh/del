@@ -483,6 +483,7 @@ public class AddEventServlet extends HttpServlet {
 }
 ---------------------------------------------------------
 1.Consider an application that implements a remote dictionary. The dictionary offers four operations: count to return the word count, insert to insert a word and its content, delete to delete a word, and lookup to search for a word and return the content of the word.
+package pkg;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 public interface DictionaryInterface extends Remote {
@@ -491,6 +492,7 @@ public interface DictionaryInterface extends Remote {
     void delete(String word) throws RemoteException;
     String lookup(String word) throws RemoteException;
 }
+package pkg;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
@@ -517,6 +519,7 @@ public class Dictionary extends UnicastRemoteObject implements DictionaryInterfa
         return dictionary.get(word);
     }
 }
+package pkg;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -524,23 +527,26 @@ public class DictionaryServer {
     public static void main(String[] args) {
         try {
             LocateRegistry.createRegistry(1099);
+   Dictionary dictionary = new Dictionary();
             Naming.rebind("DictionaryService", dictionary);
             System.out.println("Dictionary service is running..."); } catch (RemoteException e) {
             e.printStackTrace();
-        } catch (Exception e) { 
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 }
+package pkg;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 public class DictionaryClient {
     public static void main(String[] args) {
         try {
+   DictionaryInterface dictionary = (DictionaryInterface)
             Naming.lookup("rmi://localhost:1099/DictionaryService");
             dictionary.insert("apple", "A fruit with red or yellow edible skin and a core containing seeds.");
             dictionary.insert("banana", "An elongated   curved  fruit   with    a   yellow  or reddish skin.");
-            dictionary.insert("orange", "A  round   citrus  fruit   with    a   tough   bright reddish-yellow rind."); 
+            dictionary.insert("orange", "A  round   citrus  fruit   with    a   tough   bright reddish-yellow rind.");
             int wordCount = dictionary.count();
             System.out.println("Word Count: " + wordCount);
             String appleContent = dictionary.lookup("apple");
@@ -548,7 +554,7 @@ public class DictionaryClient {
             dictionary.delete("banana");    
             String bananaContent = dictionary.lookup("banana");
             System.out.println("Definition of 'banana': " + bananaContent); } catch (RemoteException e) {
-            e.printStackTrace(); 
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
